@@ -1,9 +1,9 @@
-var Plataform = Plataform || {};
+var Platform = Platform || {};
 
-Plataform.Boot = function(){};
+Platform.Boot = function(){};
 
 //setting game configuration and loading the assets for the loading screen
-Plataform.Boot.prototype = {
+Platform.Boot.prototype = {
   preload: function() {
     //assets we'll use in the loading screen
     this.load.image('preloadbar', 'assets/images/preloader-bar.png');

@@ -1,9 +1,9 @@
-var Plataform = Plataform || {};
+var Platform = Platform || {};
 
 //loading the game assets
-Plataform.Preload = function(){};
+Platform.Preload = function(){};
 
-Plataform.Preload.prototype = {
+Platform.Preload.prototype = {
   preload: function() {
     //show loading screen
     this.preloadBar = this.add.sprite(this.game.world.centerX, this.game.world.centerY, 'preloadbar');

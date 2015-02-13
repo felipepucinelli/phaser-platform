@@ -1,9 +1,9 @@
-var Plataform = Plataform || {};
+var Platform = Platform || {};
 var pixel = { scale: 4, canvas: null, context: null, width: 0, height: 0 };
 
-Plataform.Game = function(){};
+Platform.Game = function(){};
 
-Plataform.Game.prototype = {
+Platform.Game.prototype = {
   preload: function() {
     this.game.time.advancedTiming = true;  
   },

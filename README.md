@@ -1,2 +1,2 @@
-# phaser-plataform
-A plataformer game developed with phaser.io
+# phaser-platform
+A platform game developed with phaser.io

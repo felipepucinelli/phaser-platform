@@ -1,10 +1,10 @@
-var Plataform = Plataform || {};
+var Platform = Platform || {};
 
-// Plataform.game = new Phaser.Game(746, 420, Phaser.AUTO, '');
-Plataform.game = new Phaser.Game(240, 140, Phaser.CANVAS, '');
+// Platform.game = new Phaser.Game(746, 420, Phaser.AUTO, '');
+Platform.game = new Phaser.Game(240, 140, Phaser.CANVAS, '');
 
-Plataform.game.state.add('Boot', Plataform.Boot);
-Plataform.game.state.add('Preload', Plataform.Preload);
-Plataform.game.state.add('Game', Plataform.Game);
+Platform.game.state.add('Boot', Platform.Boot);
+Platform.game.state.add('Preload', Platform.Preload);
+Platform.game.state.add('Game', Platform.Game);
 
-Plataform.game.state.start('Boot');
+Platform.game.state.start('Boot');
