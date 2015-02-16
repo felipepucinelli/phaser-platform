@@ -47,11 +47,13 @@ Platform.Game.prototype = {
     //  The camera will follow the player in the world.
     this.game.camera.follow(this.player);
 
-    //  Our two animations, walking left and right.
-    this.player.animations.add('right', [0, 1, 2], 10, true);
-    this.player.animations.add('left', [3, 4, 5], 10, true);
+    //  Walk animation
+    this.player.animations.add('walk', [0, 1, 2], 10, true);
 
-    //  Get keybord.s
+    //  Center player sprite axis
+    this.player.anchor.setTo(.5,.5);
+
+    //  Get keybords
     this.cursors = this.game.input.keyboard.createCursorKeys();
   },
   
@@ -68,31 +70,33 @@ Platform.Game.prototype = {
     this.player.body.velocity.x = 0;
 
     if (this.cursors.left.isDown) {
-      //  Move to the left
+      //  Move to the left and flip sprite
+      this.player.scale.x = -1;
       this.player.body.velocity.x = -100;
-      this.player.animations.play('left');
+      this.player.animations.play('walk');
     }
     else if (this.cursors.right.isDown) {
-      //  Move to the right
+      //  Move to the right and flip sprite
+      this.player.scale.x = 1;
       this.player.body.velocity.x = 100;
-      this.player.animations.play('right');
+      this.player.animations.play('walk');
     }
     else {
       //  Stand still
       this.player.animations.stop();
-      // TODO: Check side player was moving before stopped to add the proper frame.
-      this.player.frame = 8;
+      this.player.frame = 5;
     }
     
     //  Allow the player to jump if they are touching the ground.
     if (this.cursors.up.isDown && this.player.body.blocked.down) {
         this.player.body.velocity.y = -160;
-        
-        //  Stand still
-        this.player.animations.stop();
-        this.player.frame = 7;
     }
 
+    //  Show jumping frame when player is in the air
+    if (this.cursors.up.isDown) {
+      this.player.animations.stop();
+      this.player.frame = 4;
+    }
   },
 
   playerHit: function(player, blockedLayer) {
