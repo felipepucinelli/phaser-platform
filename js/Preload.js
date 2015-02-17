@@ -16,6 +16,7 @@ Platform.Preload.prototype = {
     this.load.tilemap('map', 'assets/tilemaps/map.json', null, Phaser.Tilemap.TILED_JSON);
     this.load.image('tiles', 'assets/images/tiles.png');
     this.load.spritesheet('player', 'assets/images/player.png', 16, 16);
+    this.load.audio('jump', ['assets/audio/jump.wav']);
   },
   create: function() {
     this.state.start('Game');

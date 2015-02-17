@@ -55,6 +55,11 @@ Platform.Game.prototype = {
 
     //  Get keybords
     this.cursors = this.game.input.keyboard.createCursorKeys();
+
+    //  Player sounds
+    this.player.sounds = {
+      jump: this.game.add.audio('jump')
+    };
   },
   
   update: function() {
@@ -90,6 +95,7 @@ Platform.Game.prototype = {
     //  Allow the player to jump if they are touching the ground.
     if (this.cursors.up.isDown && this.player.body.blocked.down) {
         this.player.body.velocity.y = -160;
+        this.player.sounds.jump.play();
     }
 
     //  Show jumping frame when player is in the air
