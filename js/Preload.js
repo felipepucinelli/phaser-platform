@@ -14,9 +14,17 @@ Platform.Preload.prototype = {
 
     //load game assets
     this.load.tilemap('map', 'assets/tilemaps/map.json', null, Phaser.Tilemap.TILED_JSON);
+    
+    this.load.image('bg', 'assets/images/bg.png');
     this.load.image('tiles', 'assets/images/tiles.png');
+
+    this.load.spritesheet('rain', 'assets/images/rain.png', 8, 8);
     this.load.spritesheet('player', 'assets/images/player.png', 16, 16);
-    this.load.audio('jump', ['assets/audio/jump.wav']);
+    this.load.spritesheet('gem', 'assets/images/gem.png', 7, 7);
+
+    this.load.audio('jump', ['assets/audio/jump.mp3']);
+    this.load.audio('gem', ['assets/audio/pickup.mp3']);
+    this.load.audio('bg', ['assets/audio/bg.mp3']);
   },
   create: function() {
     this.state.start('Game');

@@ -7,9 +7,6 @@ Platform.Boot.prototype = {
   preload: function() {
     //assets we'll use in the loading screen
     this.load.image('preloadbar', 'assets/images/preloader-bar.png');
-
-    this.load.tilemap('map', 'assets/tilemaps/map.json', null, Phaser.Tilemap.TILED_JSON);
-    this.load.image('tiles', 'assets/images/tiles.png');
   },
   create: function() {
     //loading screen will have a white background
