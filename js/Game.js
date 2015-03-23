@@ -225,7 +225,7 @@ Platform.Game.prototype = {
     // pixel.canvas = Phaser.Canvas.create(this.game.width * pixel.scale, this.game.height * pixel.scale);
 
     //  Create our scaled canvas. Fullscreen mode without aspect ratio
-    if (!isMobile) pixel.canvas = Phaser.Canvas.create(window.innerWidth, (window.innerWidth / (this.game.width / this.game.height)));
+    if (!isMobile) pixel.canvas = Phaser.Canvas.create(window.innerWidth, this.game.height * (window.innerHeight/this.game.height));
 
     //  Create our scaled canvas. Fullscreen mode with aspect ratio
     if (isMobile) pixel.canvas = Phaser.Canvas.create((window.innerHeight / (this.game.height / this.game.width)), window.innerHeight);
