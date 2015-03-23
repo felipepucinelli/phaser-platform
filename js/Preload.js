@@ -14,7 +14,7 @@ Platform.Preload.prototype = {
 
     //load game assets
     this.load.tilemap('map', 'assets/tilemaps/map.json', null, Phaser.Tilemap.TILED_JSON);
-    
+
     this.load.image('bg', 'assets/images/bg.png');
     this.load.image('tiles', 'assets/images/tiles.png');
 

@@ -1,6 +1,8 @@
 var Platform = Platform || {};
 var pixel = { scale: 4, canvas: null, context: null, width: 0, height: 0 };
 var isMobile = !!navigator.userAgent.match(/iphone|android|blackberry/ig) || false;
+var gameOver = false;
+var getAllGems = false;
 
 Platform.Game = function(){};
 
@@ -10,11 +12,14 @@ Platform.Game.prototype = {
   },
 
   create: function() {
+    gameOver = false;
+    getAllGems = false;
+    
     /*
      * Background
      */
 
-    this.bg = this.game.add.tileSprite(0, 0, canvas.width, canvas.height, 'bg');
+    this.bg = this.game.add.tileSprite(0, 0, 320, 160, 'bg');
 
     /*
      * Rain
@@ -53,11 +58,14 @@ Platform.Game.prototype = {
     this.tilemap.addTilesetImage('tiles', 'tiles');
 
     //create layers
-    // this.backgroundlayer = this.tilemap.createLayer('backgroundLayer');
+    
+    this.backgroundlayer = this.tilemap.createLayer('backgroundLayer');
     this.blockedLayer = this.tilemap.createLayer('blockedLayer');
+    this.frontLayer = this.tilemap.createLayer('frontLayer');
 
-    //collision on blockedLayer
+    //collision on blockedLayer and frontLayer
     this.tilemap.setCollisionBetween(1, 100000, true, 'blockedLayer');
+    this.tilemap.setCollisionBetween(1, 100000, true, 'frontLayer');
 
     //resizes the game world to match the layer dimensions.
     this.blockedLayer.resizeWorld();
@@ -68,17 +76,21 @@ Platform.Game.prototype = {
 
     this.gems = this.game.add.group();
 
-     for (var i = 0; i < 10; i++) {
+    // Add gems in random position 
+    for (var i = 0; i < 10; i++) {
       this.gems.create(this.game.world.randomX, this.game.world.randomY, 'gem', 0);
-     }
+    }
 
-     this.gems.forEach(function(gem) {
+    // Add gravity and kill the ones that are not in a visible area
+    this.gems.forEach(function(gem) {
       this.game.physics.arcade.enable(gem);
       gem.anchor.setTo(0.5, 0.5);
       gem.body.gravity.y = 100;
       gem.animations.add('spin', [0, 1, 2, 3]);
       gem.play('spin', 10, true);
-     }, this);
+      gem.events.onOutOfBounds.add(this.gemOOB, this);
+      gem.checkWorldBounds = true;
+    }, this);
 
     /*
      * Player
@@ -119,7 +131,7 @@ Platform.Game.prototype = {
 
     this.sounds.bg.volume = 0.5;
     this.sounds.bg.loop = true;
-    this.sounds.bg.play();
+    this.sounds.bg.play(); 
 
     /*
      * Mobile Game Controller
@@ -137,15 +149,10 @@ Platform.Game.prototype = {
      */
 
     //  Collision
-    this.game.physics.arcade.collide(this.player, this.blockedLayer, this.playerHit, null, this);
+    this.game.physics.arcade.collide(this.player, this.blockedLayer, null, null, this);
+    this.game.physics.arcade.collide(this.player, this.frontLayer, this.playerHitLava, null, this);
+    this.game.physics.arcade.collide(this.player, this.gems, this.playerHitGem, null, this);
     this.game.physics.arcade.collide(this.gems, this.blockedLayer);
-
-    // Remove gem and increase score on player collision
-    this.game.physics.arcade.collide(this.player, this.gems, function(player, gem) {
-        gem.kill();
-        _this.sounds.gem.play();
-        _this.score++;
-    });
 
     //  Reset the players velocity (movement)
     this.player.body.velocity.x = 0;
@@ -183,6 +190,28 @@ Platform.Game.prototype = {
     }
   },
 
+  playerHitLava: function(player, lava) {
+    //if hits on the lava, die
+    gameOver = true;
+    this.sounds.bg.destroy();
+    this.game.state.start('Game');
+  },
+
+  gemOOB: function(gem) {
+    gem.kill();
+  },
+
+  playerHitGem: function(player, gem) {
+    gem.kill();
+    this.sounds.gem.play();
+    this.score++;
+    if (this.gems.countLiving() == 0) {
+      getAllGems = true;
+      // this.sounds.bg.destroy();
+      // this.game.state.start('Game');
+    }
+  },
+
   init: function() {
     /*
      * Config for Pixel Perfect scaling 
@@ -214,10 +243,17 @@ Platform.Game.prototype = {
   },
 
   render: function() {
-    this.game.debug.text(this.game.time.fps || '--', 5, 40, "#00ff00", "24px Courier");
+    // this.game.debug.text(this.game.time.fps || '--', 5, 40, "#00ff00", "24px Courier");
     // this.game.debug.bodyInfo(this.player, 0, 80, "#00ff00");
+    
+    // This should not be here, I know.
     this.game.debug.text('Score:' + this.score, 172, 14, "#fff", "Courier");
 
+    if (gameOver) this.game.debug.text('Don\'t hit the lava!', 50, 100, "#FFA000", "Courier");
+    if (getAllGems) {
+      this.game.debug.text('YOU GOT ALL GEMS!', 35, 50, "#0095CD", "16px Courier");
+      this.game.debug.text('(EASIEST GAME EVER, I KNOW...)', 18, 60, "#0095CD", "11px Courier");
+    }
     //  Every loop we need to render the un-scaled game canvas to the displayed scaled canvas:
     pixel.context.drawImage(this.game.canvas, 0, 0, this.game.width, this.game.height, 0, 0, pixel.width, pixel.height);
   },
