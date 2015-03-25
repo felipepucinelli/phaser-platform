@@ -25,22 +25,25 @@ Platform.Game.prototype = {
      * Rain
      */
 
-    this.rain = this.game.add.emitter(this.game.world.centerX, 0, 400);
+    // Add rain only in web browser, perf issues in old mobile devices
+    if (!isMobile) {
+      this.rain = this.game.add.emitter(this.game.world.centerX, 0, 400);
 
-    this.rain.width = this.game.world.width;
+      this.rain.width = this.game.world.width;
 
-    this.rain.makeParticles('rain');
+      this.rain.makeParticles('rain');
 
-    this.rain.minParticleScale = 0.1;
-    this.rain.maxParticleScale = 0.5;
+      this.rain.minParticleScale = 0.1;
+      this.rain.maxParticleScale = 0.5;
 
-    this.rain.setYSpeed(300, 500);
-    this.rain.setXSpeed(-5, 5);
+      this.rain.setYSpeed(300, 500);
+      this.rain.setXSpeed(-5, 5);
 
-    this.rain.minRotation = 0;
-    this.rain.maxRotation = 0;
+      this.rain.minRotation = 0;
+      this.rain.maxRotation = 0;
 
-    this.rain.start(false, 1600, 5, 0);
+      this.rain.start(false, 1600, 5, 0);
+    }
 
     /*
      * Score
@@ -126,10 +129,11 @@ Platform.Game.prototype = {
     this.sounds = {
       jump: this.game.add.audio('jump'),
       gem: this.game.add.audio('gem'),
-      bg: this.game.add.audio('bg')
+      bg: this.game.add.audio('bg'),
+      death: this.game.add.audio('death')
     };
 
-    this.sounds.bg.volume = 0.5;
+    this.sounds.bg.volume = 0.9;
     this.sounds.bg.loop = true;
     this.sounds.bg.play(); 
 
@@ -192,6 +196,7 @@ Platform.Game.prototype = {
 
   playerHitLava: function(player, lava) {
     //if hits on the lava, die
+    this.sounds.death.play();
     gameOver = true;
     this.sounds.bg.destroy();
     this.game.state.start('Game');
@@ -271,30 +276,21 @@ Platform.Game.prototype = {
       };
 
       GameController.init({
+        forcePerformanceFriendly: true,
         left: {
           type: 'dpad',
-          position: { left: '15%', bottom: '25%' },
+          position: { left: '30%', bottom: '20%' },
           dpad: {
-            up: {
-              touchStart: function() {
-                if (_this.player.body.blocked.down) {
-                  _this.player.body.velocity.y = -160;
-                  _this.player.animations.stop();
-                  _this.player.frame = 4;
-                  _this.sounds.jump.play();
-                };
-              },
-              touchEnd: function() {
-                _this.player.body.velocity.y = 0;
-                _this.player.frame = 5;
-              }
-            },
-            right: {
+            up: false,
+            down: false,
+            left: {
+              width: '45%', height: '20%',
               touchMove: function() {
-                _this.player.body.velocity.x = 100;
+                _this.player.body.velocity.x = -100;
+                _this.player.animations.play('walk');
               },
               touchStart: function() {
-                _this.player.scale.x = 1;
+                _this.player.scale.x = -1;
                 _this.player.animations.play('walk');
               },
               touchEnd: function() {
@@ -303,12 +299,14 @@ Platform.Game.prototype = {
                 _this.player.frame = 5;
               }
             },
-            left: {
+            right: {
+              width: '45%', height: '20%',
               touchMove: function() {
-                _this.player.body.velocity.x = -100;
+                _this.player.body.velocity.x = 100;
+                _this.player.animations.play('walk');
               },
               touchStart: function() {
-                _this.player.scale.x = -1;
+                _this.player.scale.x = 1;
                 _this.player.animations.play('walk');
               },
               touchEnd: function() {
@@ -320,8 +318,29 @@ Platform.Game.prototype = {
           }
         },    
         right: {
-          type: 'none'
-        },
+            type: 'buttons',
+            position: { right: '15%', bottom: '45%' },
+            buttons: [
+              {
+                  label: 'jump',
+                  fontSize: 15,
+                  radius: 50,                  
+                  touchStart: function() {
+                    if (_this.player.body.blocked.down) {
+                      _this.player.body.velocity.y = -160;
+                      _this.player.animations.stop();
+                      _this.player.frame = 4;
+                      _this.sounds.jump.play();
+                    };
+                  },
+                  touchEnd: function() {
+                    _this.player.body.velocity.y = 0;
+                    _this.player.frame = 5;
+                  }
+              },
+              false, false, false
+            ]
+        }
       });
  
       GameController.hasInitiated = true;

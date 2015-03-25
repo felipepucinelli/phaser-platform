@@ -25,6 +25,7 @@ Platform.Preload.prototype = {
     this.load.audio('jump', ['assets/audio/jump.mp3']);
     this.load.audio('gem', ['assets/audio/pickup.mp3']);
     this.load.audio('bg', ['assets/audio/bg.mp3']);
+    this.load.audio('death', ['assets/audio/laser.mp3']);
   },
   create: function() {
     this.state.start('Game');
