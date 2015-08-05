@@ -8,13 +8,14 @@ Platform.Preload.prototype = {
     //show loading screen
     this.preloadBar = this.add.sprite(this.game.world.centerX, this.game.world.centerY, 'preloadbar');
     this.preloadBar.anchor.setTo(0.5);
-    // this.preloadBar.scale.setTo(3);
+    this.preloadBar.scale.setTo(3);
 
     this.load.setPreloadSprite(this.preloadBar);
 
     //load game assets
     this.load.tilemap('map', 'assets/tilemaps/map.json', null, Phaser.Tilemap.TILED_JSON);
 
+    this.load.image('menu-bg', 'assets/images/menu-bg.png');
     this.load.image('bg', 'assets/images/bg.png');
     this.load.image('tiles', 'assets/images/tiles.png');
 
@@ -28,6 +29,6 @@ Platform.Preload.prototype = {
     this.load.audio('death', ['assets/audio/laser.mp3']);
   },
   create: function() {
-    this.state.start('Game');
+    this.state.start('Menu');
   }
 };

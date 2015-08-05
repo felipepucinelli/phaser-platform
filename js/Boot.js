@@ -10,7 +10,7 @@ Platform.Boot.prototype = {
   },
   create: function() {
     //loading screen will have a white background
-    this.game.stage.backgroundColor = '#fff';
+    this.game.stage.backgroundColor = '#000';
 
     /*
      * Crappy scaling options
